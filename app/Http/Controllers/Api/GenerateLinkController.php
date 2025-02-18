@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendGeneratedLinkMailJob;
-use App\Mail\sendGeneratedLinkMail;
 use App\Models\GeneratedLinkToken;
-use App\Traits\LogsAccessAttempts;
+use App\Services\Logging\AccessLogServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -14,7 +13,12 @@ use Illuminate\Support\Str;
 
 class GenerateLinkController extends Controller
 {
-    use LogsAccessAttempts;
+    protected AccessLogServiceInterface $access_log_service;
+
+    public function __construct(AccessLogServiceInterface $access_log_service)
+    {
+        $this->access_log_service = $access_log_service;
+    }
 
     public function generateLink()
     {
@@ -43,7 +47,7 @@ class GenerateLinkController extends Controller
     public function validateSignedLink(Request $request)
     {
         if (!$request->hasValidSignature()) {
-            $this->logAccessAttempt($request, 'tampered');
+            $this->access_log_service->logAccessAttempt($request, 'tampered');
             return response()->json([
                 'message' => 'tampered or invalid link'], 403);
         }
@@ -51,13 +55,13 @@ class GenerateLinkController extends Controller
         $generated_token = GeneratedLinkToken::where(GeneratedLinkToken::TOKEN, $request['token'])->first();
 
         if (!$generated_token) {
-            $this->logAccessAttempt($request, 'invalid');
+            $this->access_log_service->logAccessAttempt($request, 'invalid');
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         /** @var GeneratedLinkToken $generated_token */
         if (Carbon::parse($generated_token->expires_at)->timestamp <= now()->timestamp) {
-            $this->logAccessAttempt($request, 'expired');
+            $this->access_log_service->logAccessAttempt($request, 'expired');
             return response()->json([
                 'message' => 'This link has expired'
             ], 403);

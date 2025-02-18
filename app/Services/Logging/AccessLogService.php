@@ -1,12 +1,13 @@
 <?php
-namespace App\Traits;
+
+namespace App\Services\Logging;
 
 use App\Models\AccessLog;
 use Illuminate\Http\Request;
 
-trait LogsAccessAttempts
+class AccessLogService implements AccessLogServiceInterface
 {
-    public function logAccessAttempt(Request $request, string $status)
+    public function logAccessAttempt(Request $request, string $status): void
     {
         AccessLog::create([
             'token' => $request->route('token'),
