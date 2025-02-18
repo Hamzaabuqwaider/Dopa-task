@@ -7,60 +7,50 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Dopa Travel Company Task
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The goal of this task is to implement a secure, expiring one-time access link for users. This link should be:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Signed for security
+Time-limited (expires after 10 minutes)
+One-time use (invalid after the first access)
+Logged to track unauthorized access attempts
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Requirements
+1. Generate and Send a Secure Link
+   Generate a random token.
+   Store the token in the database with an expiration timestamp.
+   Create a signed URL containing the token.
+   Send the one-time access link via email (optional: if you need).
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. Validate the Access Link
+       Ensure the signature is valid to prevent tampering.
+       Check if the link has expired.
+       Ensure the link has not been used before.
+       Allow access only if all conditions are met.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. Log Unauthorized Access Attempts
+   Log cases where:
+   The link has expired.
+   The token is invalid or already used.
+   The link is tampered.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. Implement Middleware for Security
+   Use middleware to validate the request before reaching the controller.
 
-### Premium Partners
+## Notes
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+In this task, we implemented an email sending mechanism using Mailtrap for testing purposes, allowing us to simulate the process of generating and sending an email with a one-time access link.
 
-## Contributing
+- A new configuration key, can_send_mail, was added to config/mail.php. This setting is controlled by the .env file and determines whether emails should be sent when generating the link. By default, this is set to true.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+- The ability to turn off email sending by setting CAN_SEND_MAIL=false in the .env file provides flexibility in testing and real-world scenarios where emails might need to be disabled temporarily.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Endpoint API's
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- For generate new token ... POST / api/generate-link
+- For validate the link ... GET / api/secure-content/{token}

@@ -31,7 +31,7 @@ class GenerateLinkController extends Controller
         // I have added this configuration in config/mail.php. By default, it is set to true to allow sending URLs via email.
         // You can use any mail driver, but for testing purposes, I am using Mailtrap.
         if (config('mail.can_send_email')) {
-            SendGeneratedLinkMailJob::dispatch($signed_url, 'hamzaqwaider123@gmail.com');
+            SendGeneratedLinkMailJob::dispatch($signed_url, 'example@mail.com');
         }
 
         return response()->json([
