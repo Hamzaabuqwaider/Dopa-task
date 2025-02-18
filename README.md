@@ -42,7 +42,7 @@ Logged to track unauthorized access attempts
    Use middleware to validate the request before reaching the controller.
 
 ## Notes
-- If any issue appears related to timezone , Please change the timezone if .env file to Asia/Amman
+- If any issue appears related to timezone , Please change the timezone in .env file to Asia/Amman
 and in  config/app.php :
 'timezone' => env('APP_TIMEZONE', 'Asia/Amman.
 
