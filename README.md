@@ -45,6 +45,7 @@ Logged to track unauthorized access attempts
 - If any issue appears related to timezone , Please change the timezone in .env file to Asia/Amman
 and in  config/app.php :
 'timezone' => env('APP_TIMEZONE', 'Asia/Amman.
+and run commad php artisan o:c 
 
 In this task, we implemented an email sending mechanism using Mailtrap for testing purposes, allowing us to simulate the process of generating and sending an email with a one-time access link.
 
